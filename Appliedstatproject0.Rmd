@@ -30,6 +30,7 @@ hist(df$RBI,
      col = "blue", 
      border = "black")
 ```
+
 ```{r}
 boxplot(df$RBI, 
         main = "Box Plot of RBI", 
@@ -50,6 +51,21 @@ print(freq_table)
 ```{r}
 rel_freq_table <- prop.table(freq_table)
 print(rel_freq_table)
+```
+```{r}
+df$Starters<-df$GS/df$GP>0.75
+```
+```{r}
+table(df$Team,df$Starters)
+```
+```{r}
+t.test(df$RBI,mu=15)
+```
+```{r}
+t.test(df[df$Starters,"RBI"],mu=15)
+```
+```{r}
+t.test(df[df$Starters,"RBI"],df[!df$Starters,"RBI"])
 ```
 
 
