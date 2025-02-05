@@ -7,18 +7,51 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-df<-read.csv("filename")
+df<-read.csv("https://raw.githubusercontent.com/nurfnick/Data_Sets_For_Stats/refs/heads/master/CuratedDataSets/24GAChittingstatsUpdate.csv", fileEncoding = "UTF-8")
+
+head(df)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(df$rbi)
+```{r}
+View(df)
 ```
+
+```{r}
+summary(df$RBI)
+```
+```{r}
+sd(df$RBI, na.rm = TRUE)
+```
+```{r}
+hist(df$RBI, 
+     main = "Histogram of RBI", 
+     xlab = "RBI", 
+     ylab = "Frequency", 
+     col = "blue", 
+     border = "black")
+```
+```{r}
+boxplot(df$RBI, 
+        main = "Box Plot of RBI", 
+        ylab = "Values", 
+        col = "lightblue", 
+        border = "black", 
+        horizontal = FALSE)
+```
+```{r}
+qqnorm(df$RBI, main = "QQ Plot of RBI")
+qqline(df$RBI, col = "red", lwd = 2)  # Adds a reference line
+```
+
+```{r}
+freq_table <- table(df$Team)
+print(freq_table)
+```
+```{r}
+rel_freq_table <- prop.table(freq_table)
+print(rel_freq_table)
+```
+
 
 ## Including Plots
 
