@@ -469,8 +469,8 @@ all starters are hitters, but it narrows down our data.</p>
 ##   SOSU      9   14
 ##   SWOSU     6   12
 ##   UAM       9   10</code></pre>
-<p>Null Hypothesis- True mean is equivalent to 15 RBIs Alternative
-Hypothesis- True mean is not equivalent to 15 RBIs</p>
+<p>Null Hypothesis- True mean is equivalent to 15 RBIs</p>
+<p>Alternative Hypothesis- True mean is not equivalent to 15 RBIs</p>
 <pre class="r"><code>t.test(df$RBI,mu=15)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
@@ -485,9 +485,10 @@ Hypothesis- True mean is not equivalent to 15 RBIs</p>
 ##   9.23166</code></pre>
 <p>We received a low p-value so we reject the null hypothesis. The true
 mean of RBIs among all players is not 15.</p>
-<p>Null Hypothesis- True mean among starters is equivalent to 15 RBIs
-Alternative Hypothesis- True mean among starters is not equivalent to 15
+<p>Null Hypothesis- True mean among starters is equivalent to 15
 RBIs</p>
+<p>Alternative Hypothesis- True mean among starters is not equivalent to
+15 RBIs</p>
 <pre class="r"><code>t.test(df[df$Starters,&quot;RBI&quot;],mu=15)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
@@ -504,8 +505,9 @@ RBIs</p>
 mean of RBIs among starters is not 15. However, I must say my estimate
 was very close to the true mean.</p>
 <p>Null Hypothesis- True difference in means of RBIs of starters and
-non-starters is 0 Alternative Hypothesis- True difference in means of
-RBIs of starters and non-starters is not 0</p>
+non-starters is 0</p>
+<p>Alternative Hypothesis- True difference in means of RBIs of starters
+and non-starters is not 0</p>
 <pre class="r"><code>t.test(df[df$Starters,&quot;RBI&quot;],df[!df$Starters,&quot;RBI&quot;])</code></pre>
 <pre><code>## 
 ##  Welch Two Sample t-test

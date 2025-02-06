@@ -68,6 +68,7 @@ df$Starters<-df$GS/df$GP>0.75
 table(df$Team,df$Starters)
 ```
 Null Hypothesis- True mean is equivalent to 15 RBIs
+
 Alternative Hypothesis- True mean is not equivalent to 15 RBIs
 ```{r}
 t.test(df$RBI,mu=15)
@@ -75,6 +76,7 @@ t.test(df$RBI,mu=15)
 We received a low p-value so we reject the null hypothesis. The true mean of RBIs among all players is not 15. 
 
 Null Hypothesis- True mean among starters is equivalent to 15 RBIs
+
 Alternative Hypothesis- True mean among starters is not equivalent to 15 RBIs
 ```{r}
 t.test(df[df$Starters,"RBI"],mu=15)
@@ -82,6 +84,7 @@ t.test(df[df$Starters,"RBI"],mu=15)
 We received a low p-value so we reject the null hypothesis. The true mean of RBIs among starters is not 15. However, I must say my estimate was very close to the true mean.
 
 Null Hypothesis- True difference in means of RBIs of starters and non-starters is 0
+
 Alternative Hypothesis- True difference in means of RBIs of starters and non-starters is not 0
 ```{r}
 t.test(df[df$Starters,"RBI"],df[!df$Starters,"RBI"])
