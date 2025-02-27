@@ -7,13 +7,14 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
 df<-read.csv("https://raw.githubusercontent.com/nurfnick/Data_Sets_For_Stats/refs/heads/master/CuratedDataSets/24GAChittingstatsUpdate.csv", fileEncoding = "UTF-8")
 
 head(df)
 ```
 
 ```{r}
-View(df)
+head(df)
 ```
 I found this data at https://static.greatamericanconference.com/custompages/SOFTBALL%20Stats/2024/lgplyrs.htm. For this project we will be focusing on the quantitative variables RBIs, games played (GP), and games started (GS), and the categorical variables team and starters (GP/GS).
 ```{r}
@@ -95,6 +96,8 @@ We received a low p-value so we reject the null hypothesis. The true difference 
 In conclusion, there is a significant difference in the mean number of RBIs of starters and non-starters, which accounts for why our initial data distribution of RBIs among players was so skewed. The mean number of RBIs among starters was not 15, however, I was very close with my estimate as the true mean was 15.929688. I suppose next I will remove non-hitters from my data set and see what results I get then.
 
 ```{r}
+
+
 plot(df$Hits, df$AVG, 
      main = "Scatter Plot", 
      xlab = "Hits", 
@@ -109,6 +112,12 @@ abline(model, col = "red", lwd = 2)
 
 
 ```
+
+```{r}
+ggplot(data = df, aes(x = Hits,y = AVG, colour = Starters))+
+  geom_jitter()+
+  geom_smooth(method = 'lm')
+```
 ```{r}
 intercept <- coef(model)[1]
 slope <- coef(model)[2]
@@ -116,14 +125,30 @@ slope <- coef(model)[2]
 eq <- paste0("y = ", round(intercept, 5), " + ", round(slope, 5), "x")
 print(eq)
 ```
-This regression line shows the postive relationship between number of hits and batting average
+This regression line shows the positive relationship between number of hits and batting average
 ```{r}
 cor(df$Hits, df$AVG)
-
+cor.test(df$Hits, df$AVG)
 ```
 From the correlation coefficient, we can see that there is a positive, moderately strong correlation between the number of hits the batters had and their batting average. The correlation would probably get closer to one if we removed some outliers from the data, or just looked at the data of starters.
+```{r}
+predict(model,df[df$Player == "Watson",],interval="confidence")
 
+model$residuals[43]
+```
+```{r}
+predict(model,data.frame(Hits = c(100)))
+```
 
+```{r}
+plot(model)
+```
 
-
+```{r}
+summary(model)
+```
+```{r}
+lm(AVG~.-Player-SB.ATT,df)
+```
+How it effects your average
 
