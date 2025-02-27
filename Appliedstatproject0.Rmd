@@ -151,4 +151,7 @@ summary(model)
 lm(AVG~.-Player-SB.ATT,df)
 ```
 How it effects your average
+```{r}
+aggregate(HBP ~ Team, data = df, FUN = sum)
+```
 
