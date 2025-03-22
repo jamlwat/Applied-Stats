@@ -140,10 +140,11 @@ predict(model,df[df$Player == "Watson",],interval="confidence")
 model$residuals[43]
 
 ```
+Players actual average was 0.297 which is within our interval.
 ```{r}
-predict(model,data.frame(Hits = c(100)))
+predict(model,data.frame(Hits = c(50)))
 ```
-
+Based on our regression, a player with 50 hits would have a 0.352 batting average.
 ```{r}
 plot(model)
 ```
@@ -158,4 +159,4 @@ lm(AVG~.-Player-SB.ATT,df)
 ```{r}
 aggregate(HBP ~ Team, data = df, FUN = sum)
 ```
-
+Total HBP of each team in the GAC
