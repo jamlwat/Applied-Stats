@@ -113,11 +113,7 @@ abline(model, col = "red", lwd = 2)
 
 ```
 
-```{r}
-ggplot(data = df, aes(x = Hits,y = AVG, colour = Starters))+
-  geom_jitter()+
-  geom_smooth(method = 'lm')
-```
+
 ```{r}
 intercept <- coef(model)[1]
 slope <- coef(model)[2]
@@ -125,16 +121,24 @@ slope <- coef(model)[2]
 eq <- paste0("y = ", round(intercept, 5), " + ", round(slope, 5), "x")
 print(eq)
 ```
-This regression line shows the positive relationship between number of hits and batting average
+
 ```{r}
 cor(df$Hits, df$AVG)
 cor.test(df$Hits, df$AVG)
 ```
-From the correlation coefficient, we can see that there is a positive, moderately strong correlation between the number of hits the batters had and their batting average. The correlation would probably get closer to one if we removed some outliers from the data, or just looked at the data of starters.
+While this does show a positive relationship between hits and batting average, it is not a very strong relationship. Lets look at and compare the correlations between and hits and batting average of starters and non starters.
+```{r}
+ggplot(data = df, aes(x = Hits,y = AVG, colour = Starters))+
+  geom_jitter()+
+  geom_smooth(method = 'lm')
+
+```
+We can clearly see that among starters, the relationship between hits and batting average is strong. However, among non starters the relationship is very weak, as we would expect.
 ```{r}
 predict(model,df[df$Player == "Watson",],interval="confidence")
 
 model$residuals[43]
+
 ```
 ```{r}
 predict(model,data.frame(Hits = c(100)))
@@ -150,7 +154,7 @@ summary(model)
 ```{r}
 lm(AVG~.-Player-SB.ATT,df)
 ```
-How it effects your average
+
 ```{r}
 aggregate(HBP ~ Team, data = df, FUN = sum)
 ```
