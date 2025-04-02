@@ -160,3 +160,38 @@ lm(AVG~.-Player-SB.ATT,df)
 aggregate(HBP ~ Team, data = df, FUN = sum)
 ```
 Total HBP of each team in the GAC
+
+```{r}
+library(caret)
+trainingsample <- createDataPartition(df$Hits, p=0.667,list=FALSE)
+```
+Training samples (split the data into 2/3 of it)
+```{r}
+traindata <- df[trainingsample, ]
+testdata <- df[-trainingsample, ]
+```
+
+```{r}
+model <- lm(AVG ~ Hits, data = traindata)
+summary(model)
+```
+```{r}
+plot(traindata$Hits,traindata$AVG,col="red")
+points(testdata$Hits,testdata$AVG,col="blue")
+abline(model)
+```
+```{r}
+pre <- predict(model, testdata)
+```
+```{r}
+R2(pre, testdata$AVG)
+```
+```{r}
+train.control <- trainControl(method="cv", number=10)
+model <- train(AVG~Hits, 
+               data=df,
+               method='lm',
+               trControl=train.control)
+print(model)
+```
+
