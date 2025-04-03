@@ -160,32 +160,43 @@ lm(AVG~.-Player-SB.ATT,df)
 aggregate(HBP ~ Team, data = df, FUN = sum)
 ```
 Total HBP of each team in the GAC
+```{r}
+library(boot)
+boot_mean <- function(df, indices) {
+  return(mean(df[indices]))
+}
+set.seed(123)
+
+```
 
 ```{r}
 library(caret)
 trainingsample <- createDataPartition(df$Hits, p=0.667,list=FALSE)
 ```
-Training samples (split the data into 2/3 of it)
+Randomly selected 2/3 of the data to be my training data.
 ```{r}
 traindata <- df[trainingsample, ]
 testdata <- df[-trainingsample, ]
 ```
-
+Assigned this training data to traindata, and assigned the rest, the remaining 1/3, to be testdata.
 ```{r}
 model <- lm(AVG ~ Hits, data = traindata)
 summary(model)
 ```
+Created a linear model of our train data. Our r squared isn't great, which makes sense because our original r squared wasn't great.
 ```{r}
 plot(traindata$Hits,traindata$AVG,col="red")
 points(testdata$Hits,testdata$AVG,col="blue")
 abline(model)
 ```
+Plotted our traindata (red) and testdata (blue) in a scatter plot along with our linear model.
 ```{r}
 pre <- predict(model, testdata)
 ```
 ```{r}
 R2(pre, testdata$AVG)
 ```
+Examined our predication on our test data.
 ```{r}
 train.control <- trainControl(method="cv", number=10)
 model <- train(AVG~Hits, 
@@ -194,4 +205,4 @@ model <- train(AVG~Hits,
                trControl=train.control)
 print(model)
 ```
-
+Performed a 10-fold cross validation. Tbh idk what exactly this is telling me....
