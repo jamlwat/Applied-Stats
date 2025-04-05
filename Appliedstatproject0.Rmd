@@ -160,13 +160,41 @@ lm(AVG~.-Player-SB.ATT,df)
 aggregate(HBP ~ Team, data = df, FUN = sum)
 ```
 Total HBP of each team in the GAC
+
+We will now perform a bootstrap mean on RBIs and compare this to our mean we computed early on in Module 0. Original Hypothesis test:
+Null Hypothesis- True mean is equivalent to 15 RBIs
+
+Alternative Hypothesis- True mean is not equivalent to 15 RBIs
 ```{r}
 library(boot)
 boot_mean <- function(df, indices) {
   return(mean(df[indices]))
 }
 set.seed(123)
-
+bootstrap_results <- boot(df$RBI, boot_mean, R = 1001)
+print(bootstrap_results)
+```
+Our original mean was 9.232 and the difference between our original mean and our bootstrap mean is 0.02373.This means our bootstrap mean is 9.255 RBIs.
+```{r}
+hist(bootstrap_results$t, breaks = 30, main = "Bootstrap Means", xlab = "Mean Value", col = "lightblue", border = "black")
+```
+```{r}
+observed_mean <- mean(df$RBI)
+null_data <- df$RBI - mean(df$RBI) + 15
+set.seed(123)  
+boot_null <- boot(null_data, boot_mean, R = 1001)
+p_value <- mean(abs(boot_null$t) >= abs(observed_mean))
+print(p_value)
+```
+Really not sure how I am getting very high p-values.
+```{r}
+boot.ci(bootstrap_results, type = c("perc", "bca"))
+```
+The 95% confidence interval for the mean is approximately between 7.989 and 10.663 RBIs.
+```{r}
+hist(boot_null$t, breaks = 30, main = "Bootstrap Null Distribution",
+     xlab = "Bootstrap Means (under H₀: mean = 15)", col = "lightblue")
+abline(v = observed_mean, col = "red", lwd = 2)
 ```
 
 ```{r}
