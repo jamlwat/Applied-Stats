@@ -184,26 +184,26 @@ boot.ci(bootstrap_results, type = c("perc", "bca"))
 The 95% confidence interval for the mean is approximately between 7.989 and 10.663 RBIs.Since our null hypothesis of 15 RBI's does not lie within our interval, we can reject the null hypothesis.
 
 For my new hypothesis test:
-Null hypothesis- True mean is equivalent to 20 BB's (walks).
-Alternative hypothesis- True mean is not equivalent to 20 BB's (walks).
+Null hypothesis- True median is equivalent to 7 BB's (walks).
+Alternative hypothesis- True median is not equivalent to 7 BB's (walks).
 ```{r}
 library(boot)
-boot_mean <- function(df, indices) {
-  return(mean(df[indices]))
+boot_median <- function(df, indices) {
+  return(median(df[indices]))
 }
 set.seed(123)
-bootstrap_results <- boot(df$BB, boot_mean, R = 1001)
+bootstrap_results <- boot(df$BB, boot_median, R = 1001)
 print(bootstrap_results)
 ```
 My estimate was obviously pretty far off, I think if we could run the bootstrap mean on starters only it would have been more on target.
 ```{r}
-hist(bootstrap_results$t, breaks = 30, main = "Bootstrap Means BB's", xlab = "Mean Value", col = "lightblue", border = "black")
+hist(bootstrap_results$t, breaks = 30, main = "Bootstrap Median BB's", xlab = "Median Value", col = "lightblue", border = "black")
 ```
-Looking at the distribution, I renounce my previous statement, 20 walks was a heavy overestimate...
+Unlike our bootstrap mean distribution, this distribution is not normal at all, which is to be expected.
 ```{r}
 boot.ci(bootstrap_results, type = c("perc", "bca"))
 ```
-My mean estimate is no where near the confidence interval here, thus we reject the null hypothesis. True mean is not equivalent to 20 BB's.
+My mean estimate is not in the confidence interval, thus we can reject my null hypothesis. The true median is not equivalent to 8 walks.
 
 Onto Cross validation
 ```{r}
