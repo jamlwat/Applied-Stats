@@ -1,0 +1,92 @@
+---
+title: "Module 2 Diamonds Assignment"
+author: "Jami Watson"
+date: "2025-04-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+summary(diamonds)
+```
+Null hypothesis- True mean is equivalent to 1 carat.
+Alternative hypothesis- True mean is not equivalent to 1 carat.
+
+To run a bootstrap mean we will first install the boot package from the library.
+```{r}
+library(boot)
+```
+Then we assign our function the name, boot_mean
+```{r}
+boot_mean <- function(df, indices) {
+  return(mean(df[indices]))
+}
+```
+We then pick a random number for the set.seed and create our bootstrap samples and run our statistic on them.
+```{r}
+set.seed(65)
+bootstrap_results <- boot(diamonds$carat, boot_mean, R = 1001)
+print(bootstrap_results)
+```
+We can see that our original mean statistic was 0.798, and our bootstrap was not far off from that, -0.00001146 away. Now to see the distribution of our boostrap we will create a histogram of the test statistics ran on that bootstrap samples.
+```{r}
+hist(bootstrap_results$t, breaks = 30, main = "Bootstrap Means carat", xlab = "Mean Value", col = "lightblue", border = "black")
+```
+We are given a relatively normal distribution. We will now find the bootstrap confidence interval and see if your null hypothesis is true.
+```{r}
+boot.ci(bootstrap_results, type = c("perc", "bca"))
+```
+Our null hypothesis of the true mean being 1 carat is rejected because it does not lie within our 95% confidence interval. Thus, the true mean is not equivalent to 1 carat.
+
+Now for 10 fold cross validations
+First we will install the caret package, and then we will randomly select 2/3 of our data to be our training data.
+```{r}
+library(caret)
+trainingsample <- createDataPartition(diamonds$carat +diamonds$depth + diamonds$table, p=0.667,list=FALSE)
+```
+We will now assign this 2/3 of the data to traindata, and the remaining 1/3 of the data to testdata. 
+```{r}
+traindata <- diamonds[trainingsample, ]
+testdata <- diamonds[-trainingsample, ]
+```
+Here is the linear model summary of all of our data.
+```{r}
+fit <- lm(price ~ carat +depth + table, data = diamonds)
+summary(fit)
+```
+Here is the linear model summary of just our traindata.
+```{r}
+fit <- lm(price ~ carat +depth + table, data = traindata)
+summary(fit)
+```
+Our r-squared varied slightly from our original r-squared but not ver much, only 0.0002, and both r-squareds were good, around 0.85. Our standard error varied slightly from our original model, mostly with the carat category.
+
+
+```{r}
+plot(traindata$carat,traindata$price,col="red")
+points(testdata$carat,testdata$price,col="blue")
+abline(fit)
+```
+Disregard this for now, need to work out a few kinks but I am keeping it in here to remind myself to ask questions later.
+
+```{r}
+pre <- predict(fit, testdata)
+```
+```{r}
+R2(pre, testdata$price)
+```
+I believe this is our predicted R-squared value, pretty close to our train and original data. Also shows a good fit.
+
+```{r}
+train.control <- trainControl(method="cv", number=10)
+model <- train(price~carat + depth + table, 
+               data=diamonds,
+               method='lm',
+               trControl=train.control)
+print(model)
+```
+
+
