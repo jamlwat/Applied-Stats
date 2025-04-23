@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
 ```
 
 ```{r}
@@ -37,7 +38,7 @@ hist(bootstrap_results$t, breaks = 30, main = "Bootstrap Means carat", xlab = "M
 ```
 We are given a relatively normal distribution. We will now find the bootstrap confidence interval and see if your null hypothesis is true.
 ```{r}
-boot.ci(bootstrap_results, type = c("perc", "bca"))
+boot.ci(bootstrap_results, type = c("perc"))
 ```
 Our null hypothesis of the true mean being 1 carat is rejected because it does not lie within our 95% confidence interval. Thus, the true mean is not equivalent to 1 carat.
 
