@@ -243,3 +243,74 @@ model <- train(AVG~Hits,
 print(model)
 ```
 Performed a 10-fold cross validation. Tbh idk what exactly this is telling me....
+
+```{r}
+max(df$BB)
+```
+So our categories will be 0-6 walks, 7-13 walks, 14-20 walks, 21-27 walks, and 28-34 walks. So lets test the theory that p1=p2=p3=p4=p5.Note: I am testing this, however I know I will have to reject my hypothesis, I just didn't have many categorical variables to work with.
+
+Null Hypothesis: Players are equally likely to have a total walk count in each category.
+Alternative Hypothesis: Players are not equally likely to have a total walk count in each category.
+
+First we will find our observed counts
+```{r}
+bins <- c(0, 7, 14, 21, 28, 35)
+
+walk_categories <- cut(df$BB, breaks = bins, right = FALSE)
+
+observed_counts <- table(walk_categories)
+
+observed_counts
+```
+Our expected counts will be 51.8 for all bins.
+```{r}
+observed <- c(159, 62, 20, 14, 4)
+
+
+expected <- rep(51.8, 5)
+
+
+chisq.test(x = observed, p = rep(0.20, 5))
+
+
+chisq.test(x = observed, p = expected / sum(expected))
+```
+We got a very very small p-value, thus we can reject our null hypothesis.
+```{r}
+counts_matrix <- rbind(Observed = observed, Expected = expected)
+bin_labels <- c("0-6", "7-13", "14-20", "21-17", "28-34")
+
+barplot(counts_matrix, 
+        beside = TRUE,
+        names.arg = bin_labels,
+        col = c("skyblue", "salmon"), 
+        main = "Observed vs Expected Counts",
+        xlab = "Walk Range",
+        ylab = "Walk Count",
+        legend.text = TRUE)
+```
+I will do this over starters and non-starters and whether this is independent of number of hits. 
+Null hypothesis: There is no association between whether a player is a starter and how many hits they have.
+Alternative hypothesis: There is association between whether a player is a starter and how many hits they have.
+Lets start with getting our observed counts 
+```{r}
+observed_counts <- table(df$Starters, df$Hits)
+
+observed_counts
+```
+```{r}
+chisq.test(observed_counts)
+```
+We got a very low p-value, thus we can reject our null hypothesis. Proving there is an association between whether a player is a starter and how many hits they have.
+```{r}
+chisq.test(observed_counts)$expected
+```
+
+
+```{r}
+mosaicplot(observed_counts,
+           main = "Mosaic Starter vs GS",
+           color = TRUE,
+           shade = TRUE)
+```
+I need help reading this tbh....
