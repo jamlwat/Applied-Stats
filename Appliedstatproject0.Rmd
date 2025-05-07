@@ -290,18 +290,18 @@ barplot(counts_matrix,
         legend.text = TRUE)
 ```
 I will do this over starters and non-starters and whether this is independent of number of hits. 
-Null hypothesis: There is no association between whether a player is a starter and how many hits they have.
-Alternative hypothesis: There is association between whether a player is a starter and how many hits they have.
-Lets start with getting our observed counts 
+Null hypothesis: There is no association between whether a player is a starter and whether they have greater than 30 hits.
+Alternative hypothesis: There is association between whether a player is a starter and whether they have greater than 30 hits.
+Lets start with getting our observed counts
 ```{r}
-observed_counts <- table(df$Starters, df$Hits)
+observed_counts <- table(df$Starters, df$Hits>25)
 
 observed_counts
 ```
 ```{r}
 chisq.test(observed_counts)
 ```
-We got a very low p-value, thus we can reject our null hypothesis. Proving there is an association between whether a player is a starter and how many hits they have.
+We got a very low p-value, thus we can reject our null hypothesis. Proving there is an association between whether a player is a starter and whether they have greater than 30 hits.
 ```{r}
 chisq.test(observed_counts)$expected
 ```
@@ -309,7 +309,7 @@ chisq.test(observed_counts)$expected
 
 ```{r}
 mosaicplot(observed_counts,
-           main = "Mosaic Starter vs GS",
+           main = "Mosaic Starter vs Hits>30",
            color = TRUE,
            shade = TRUE)
 ```
