@@ -314,3 +314,34 @@ mosaicplot(observed_counts,
            shade = TRUE)
 ```
 I need help reading this tbh....
+One way- Averages of Teams
+Null Hypothesis: True mean of averages for each team are equal.
+Alternative: True mean of averages for each team are not equal.
+```{r}
+results<- aov(AVG~Team, data=df)
+summary(results)
+```
+We fail to reject the null hypothesis, thus the true mean of averages for each team are equal.
+```{r}
+plot(results)
+```
+Residual variance isn't great but also isn't bad.
+```{r}
+ggplot(df, aes(y=AVG, x=Team))+ 
+  geom_boxplot()
+```
+two way- Averages of starters and non starters on a team
+Null hypothesis: Mean of averages of Starters is equal to mean of averages of non-starters on each team.
+Alternative hypothesis: Mean of averages of starters is not equal to mean of averages of non-starters on each team.
+```{r}
+result<- aov(AVG~Team*Starters, data=df)
+summary(result)
+```
+Reject null on two way table, being a starter makes a difference and teams and starters makes a difference.
+```{r}
+ggplot(df, aes(y=AVG, x=Team, fill=Starters))+ 
+  geom_boxplot()
+```
+You can really see the difference being a starter makes here. 
+
+kruskal-wallis (anova but with median) and spearman rank correlation (module 1)
