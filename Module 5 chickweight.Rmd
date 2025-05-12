@@ -18,8 +18,8 @@ head(ChickWeight)
 Wilcoxson Ranked Sign Test
 Chickens that do not put on weight early in life are most likely to die. Examine the hypothesis that diet 1 will not have an effect on early weight gain of the chicks. Use a non-parametric method for matched pairs.
 
-Null hypothesis= Median difference between early and late chickweight from diet 1 is 0.
-Alternatve hypothesis= Median difference between early and late chickweight from diet 1 is not 0.
+Null hypothesis= Median difference between weight at t=4 and t=0 from diet 1 is 0.
+Alternatve hypothesis= Median difference between weight at t=4 and t=0 from diet 1 is not 0.
 
 ```{r}
 table(ChickWeight$Diet == 1)
@@ -27,9 +27,9 @@ table(ChickWeight$Diet == 1)
 We have 220 rows in the table for diet 1
 
 ```{r}
-df1 <- ChickWeight[ChickWeight$Diet == 1 & ChickWeight$Time %in% c(0,10), ]
+df1 <- ChickWeight[ChickWeight$Diet == 1 & ChickWeight$Time %in% c(0,4), ]
 ```
-So df1 contains only the rows from the ChickWeight dataset where the diet is 1 and time is 0 or 10.
+So df1 contains only the rows from the ChickWeight dataset where the diet is 1 and time is 0 or 4.
 ```{r}
 head(df1)
 ```
@@ -46,6 +46,6 @@ wide_data <- na.omit(wide_data)
 
 print(wide_data)
 
-wilcox.test(wide_data$Time_10, wide_data$Time_0, paired = TRUE, alternative = "two.sided")
+wilcox.test(wide_data$Time_4, wide_data$Time_0, paired = TRUE, alternative = "two.sided")
 ```
-Our p-value is low, although not very low, but anyways, we can reject the null hypothesis! Also WOW THAT WAS COMPLICATED MY HEAD HURTS. So, the median difference between early and late chickweight from diet 1 is not 0.
+Our p-value is low, although not very low, but anyways, we can reject the null hypothesis! Also WOW THAT WAS COMPLICATED MY HEAD HURTS.
