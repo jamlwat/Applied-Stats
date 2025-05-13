@@ -17,6 +17,8 @@ head(df)
 head(df)
 ```
 I found this data at https://static.greatamericanconference.com/custompages/SOFTBALL%20Stats/2024/lgplyrs.htm. For this project we will be focusing on the quantitative variables RBIs, games played (GP), and games started (GS), and the categorical variables team and starters (GP/GS).
+
+# Module 0
 ```{r}
 summary(df)
 ```
@@ -95,6 +97,8 @@ We received a low p-value so we reject the null hypothesis. The true difference 
 
 In conclusion, there is a significant difference in the mean number of RBIs of starters and non-starters, which accounts for why our initial data distribution of RBIs among players was so skewed. The mean number of RBIs among starters was not 15, however, I was very close with my estimate as the true mean was 15.929688. I suppose next I will remove non-hitters from my data set and see what results I get then.
 
+# Module 1
+
 ```{r}
 
 
@@ -161,6 +165,7 @@ aggregate(HBP ~ Team, data = df, FUN = sum)
 ```
 Total HBP of each team in the GAC
 
+# Module 2
 We will now perform a bootstrap mean on RBIs and compare this to our mean we computed early on in Module 0. Original Hypothesis test:
 Null Hypothesis- True mean is equivalent to 15 RBIs
 Alternative Hypothesis- True mean is not equivalent to 15 RBIs
@@ -244,6 +249,7 @@ print(model)
 ```
 Performed a 10-fold cross validation. Tbh idk what exactly this is telling me....
 
+# Module 3
 ```{r}
 max(df$BB)
 ```
@@ -314,6 +320,9 @@ mosaicplot(observed_counts,
            shade = TRUE)
 ```
 I need help reading this tbh....
+
+# Module 4
+
 One way- Averages of Teams
 Null Hypothesis: True mean of averages for each team are equal.
 Alternative: True mean of averages for each team are not equal.
@@ -345,3 +354,72 @@ ggplot(df, aes(y=AVG, x=Team, fill=Starters))+
 You can really see the difference being a starter makes here. 
 
 kruskal-wallis (anova but with median) and spearman rank correlation (module 1)
+
+# Module 5       
+
+Alrighty, for module 5 I will be first be performing the kruskal-wallis test on the same thing I did for my one-way anova test, but I will be using the non-parametric statistic, median, instead of mean.
+
+Null Hypothesis: Median of averages for each team are equal.
+Alternative Hypothesis: Median of averages for each team are not equal.
+
+First, lets look at the boxplot.
+```{r}
+boxplot(df$AVG ~ df$Team)
+```
+Harding and SNU have two of the highest team batting averages, and they were ranked highly in the conference, so it makes sense that they are up there.
+
+Now lets look at the median batting averages for each team.
+```{r}
+by(df$AVG,df$Team, median)
+```
+Looks about right.
+
+Now we run our test
+```{r}
+kruskal.test(AVG ~ Team , data = df)
+```
+We got a pretty high p-value, thus we fail to reject our null hypothesis. So, the median of averages for each team are equal. We got the same result when looking at the means. 
+
+```{r}
+barplot(table(df$AVG),
+        main = "AVG Distribution",
+        xlab = "AVG", ylab = "Count")
+```
+Not normal
+
+I think the kruskal wallis test was the better way to go because the data did not have normal distribution, nor could I guarantee equal variance across the groups. And in this case since all the data is pretty close together and there is a lot of it, the medians probably don't lie very far from the means anyways.
+
+Okayyyy, now onto the Spearman rank correlation test. I will perform the test on the same thing that I did in module 1, that is, do hits relate to avg. SPOILER ALERT, THEY DO!
+
+But anyways here we go. 
+
+```{r}
+cor.test(df$Hits, df$AVG, method = "spearman")
+```
+We reject the null hypothesis- very low p-value
+
+```{r}
+plot(df$Hits, df$AVG)
+abline(lm(AVG ~ Hits, data = df),col = "Blue")
+```
+Obviously we get a very positive, strong correlation. Hits do relate to AVG.
+
+
+```{r}
+barplot(table(df$Hits),
+        main = "Hit distribution",
+        xlab = "Hits", ylab = "Count")
+```
+Obviously not normal
+
+```{r}
+barplot(table(df$AVG),
+        main = "Batting Average Distribution",
+        xlab = "AVG", ylab = "Count")
+```
+Not normal
+
+
+In this particular case, I think Spearman is the way to go because there are outliers in this data. Number of hits is obviously related to batting average because number of hits is used to calculate batting average. The outliers in this data are negligible, they are one off instances and don't truly exemplify an accurate batting average. Why should a pitchers .000 batting average hold weight, or someone who pinch hit once and got a hit so they are batting 1.000. They don't reflect a real batting average, which is why in this case spearman is better because the outliers don't effect our result as much. The outliers here are negligible, which is why when I used perason I ran the test on starters so I could prove the relationship existed. 
+
+Also, neither distributions of are normal because of the outliers in the data, so spearman is a better test.
